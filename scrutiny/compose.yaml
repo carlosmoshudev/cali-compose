@@ -1,0 +1,29 @@
+services:
+  scrutiny:
+    image: ghcr.io/analogj/scrutiny:${SCRUTINY_TAG}
+    container_name: scrutiny
+    restart: unless-stopped
+
+    # Necesario para smartctl
+    cap_add:
+      - SYS_RAWIO
+      # - SYS_ADMIN   # descomenta si tienes NVMe
+
+    environment:
+      - TZ=${TIMEZONE}
+
+    ports:
+      - "${SCRUTINY_WEB_PORT}:8080"
+      - "${SCRUTINY_INFLUX_PORT}:8086"
+
+    volumes:
+      - /run/udev:/run/udev:ro
+      - ${APPDATA}/scrutiny/config:/opt/scrutiny/config
+      - ${APPDATA}/scrutiny/influxdb:/opt/scrutiny/influxdb
+
+    devices:
+      - /dev/sda:/dev/sda
+      - /dev/sdb:/dev/sdb
+      - /dev/sdc:/dev/sdc
+      # - /dev/nvme0:/dev/nvme0
+      # - /dev/bus/usb:/dev/bus/usb   # a veces útil con discos USB
