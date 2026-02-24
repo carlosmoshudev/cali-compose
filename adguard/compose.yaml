@@ -1,0 +1,23 @@
+name: adguardhome
+
+services:
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "3001:3000/tcp"
+      - "8082:80/tcp"
+    volumes:
+      - ${APPDATA}/adguard/work:/opt/adguardhome/work
+      - ${APPDATA}/adguard/conf:/opt/adguardhome/conf
+    environment:
+      - TZ=${TIMEZONE}
+
+volumes:
+  config:
+    driver: local
+  work:
+    driver: local

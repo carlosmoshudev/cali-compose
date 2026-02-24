@@ -1,0 +1,17 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    restart: unless-stopped
+    group_add:
+      - "984"
+    ports:
+      - 3000:3000
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - HOMEPAGE_ALLOWED_HOSTS=${ALLOWED_HOSTS}
+    volumes:
+      - ${APPDATA}/homepage/config:/app/config
+      - ${DOCKER_SOCK}:/var/run/docker.sock:ro

@@ -1,0 +1,13 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ${LOCALTIME}:/etc/localtime:ro
+      - ${DOCKER_SOCK}:/var/run/docker.sock:ro
+      - ${APPDATA}/portainer:/data
+    ports:
+      - 9443:9443

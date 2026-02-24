@@ -1,0 +1,36 @@
+services:
+  romm-db:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: romm-db
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PWD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PWD}
+    volumes:
+      - ${APPDATA}/romm/db:/config
+
+  romm:
+    image: rommapp/romm:latest
+    container_name: romm
+    restart: unless-stopped
+    depends_on:
+      - romm-db
+    ports:
+      - "8086:8080"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWD=${DB_PWD}
+      - ROMM_AUTH_SECRET_KEY=${AUTH_KEY}
+    volumes:
+      - ${APPDATA}/romm/resources:/romm/resources
+      - ${APPDATA}/romm/redis:/redis-data
+      - ${MEDIA}/roms:/romm/library
+      - ${APPDATA}/romm/assets:/romm/assets
+      - ${APPDATA}/romm/config:/romm/config
